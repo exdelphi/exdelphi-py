@@ -1,11 +1,10 @@
-# python-template
+# exdelphi-py
 
-Project template in Python
+Python client for [EXDELPHI](https://www.exdelphi.com/) API
 
+## Further information
 
-## TODO
-
-* Add todo items here
+API endpoints are described [here](http://api.exdelphi.com/docs).
 
 ## Credits
 
