@@ -1,5 +1,5 @@
 import unittest
-import exdelphi.main as main
+import exdelphi.client as main
 
 
 class TestMain(unittest.TestCase):
