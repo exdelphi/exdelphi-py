@@ -2,8 +2,8 @@ from typing import List
 import requests
 import pandas as pd
 import json
-import exdelphi.data_model as data_model
-from exdelphi.api_time import int_to_datetime, datetime_to_int
+import data_model as data_model
+from api_time import int_to_datetime, datetime_to_int
 
 
 BASE_URL = "http://api.exdelphi.com"
