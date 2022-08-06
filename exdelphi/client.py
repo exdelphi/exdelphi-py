@@ -28,11 +28,17 @@ def get_product_list() -> List[data_model.Product]:
     return [data_model.Product.parse_obj(item) for item in json.loads(response.text)]
 
 
+<<<<<<< HEAD
 def get_data_sets_for_product(product_id) -> List[data_model.Dataset]:
     """Returns list of datasets from given product available to authorized user"""
     response = requests.get(
         url=f"{BASE_URL}/data_sets/{product_id}", headers=HEADERS
     )
+=======
+def get_data_sets_for_product(product_id: int) -> List[data_model.Dataset]:
+    """Returns list of datasets from given product available to authorized user"""
+    response = requests.get(url=f"{BASE_URL}/data_sets/{product_id}", headers=HEADERS)
+>>>>>>> 4675070679cc5589e7631cd1d8c940c95d48038a
     return [data_model.Dataset.parse_obj(item) for item in json.loads(response.text)]
 
 

@@ -1,6 +1,7 @@
 import client
 import pandas as pd
 
+
 if __name__ == '__main__':
     client.authorize(username="USERNAME", password="PASSWORD")
     product_list = client.get_product_list()
@@ -14,3 +15,4 @@ if __name__ == '__main__':
     data['t'] = data.index
     print(client.convert_to_timestamp(data))
     client.upload_data(product_id=1, start_time=100000000, data=data)
+
