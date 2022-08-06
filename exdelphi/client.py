@@ -28,12 +28,10 @@ def get_product_list() -> List[data_model.Product]:
     return [data_model.Product.parse_obj(item) for item in json.loads(response.text)]
 
 
-def get_data_sets_for_product(
-    product_item: data_model.Product,
-) -> List[data_model.Dataset]:
+def get_data_sets_for_product(product_id) -> List[data_model.Dataset]:
     """Returns list of datasets from given product available to authorized user"""
     response = requests.get(
-        url=f"{BASE_URL}/data_sets/{product_item.id}", headers=HEADERS
+        url=f"{BASE_URL}/data_sets/{product_id}", headers=HEADERS
     )
     return [data_model.Dataset.parse_obj(item) for item in json.loads(response.text)]
 
@@ -44,7 +42,7 @@ def get_data(data_set_id: int) -> pd.DataFrame:
     result = json.loads(request.text)
     data = pd.DataFrame(result)
     data.set_index("t", inplace=True)
-    return data
+    return convert_to_timestamp(data)
 
 
 def convert_to_timestamp(data: pd.DataFrame) -> pd.DataFrame:
@@ -53,7 +51,7 @@ def convert_to_timestamp(data: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
-def convert_to_int(self, data: pd.DataFrame) -> pd.DataFrame:
+def convert_to_int(data: pd.DataFrame) -> pd.DataFrame:
     """Converts time column `t` from time stamps representation to int"""
     data["t"] = data["t"].map(lambda t: datetime_to_int(t))
     return data
