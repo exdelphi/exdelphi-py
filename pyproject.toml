@@ -8,7 +8,7 @@ version = "0.0.1"
 authors = [
   { name="exdelphi", email="hi@exdelphi.com" },
 ]
-description = "Python template"
+description = "exdelphi Python client"
 readme = "README.md"
 requires-python = ">=3.7"
 dependencies = ["pydantic", "pandas>=1.0", "requests"]
