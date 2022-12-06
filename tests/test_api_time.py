@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from exdelphi.api_time import datetime_to_int, int_to_datetime
+from exdelphi.api_time import datetime_to_int, int_to_datetime, datetime_string_to_int
 
 
 class TestApiTime(unittest.TestCase):
@@ -20,3 +20,12 @@ class TestApiTime(unittest.TestCase):
             1670346861,
         )
         self.assertEqual(datetime_to_int(datetime(1970, 1, 1, tzinfo=timezone.utc)), 0)
+
+    def test_datetime_string_to_int(self):
+        format_string = "%Y-%m-%d %H:%M:%S"
+        self.assertEqual(
+            datetime_string_to_int("2022-12-06 17:14:21", format_string), 1670346861
+        )
+        self.assertEqual(
+            datetime_string_to_int("1970-01-01 00:00:00", format_string), 0
+        )
