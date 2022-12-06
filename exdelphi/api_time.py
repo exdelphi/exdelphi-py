@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def datetime_to_int(datetime_object: datetime) -> int:
@@ -14,4 +14,4 @@ def datetime_string_to_int(datetime_string: str, format_string: str) -> int:
 
 def int_to_datetime(unix_timestamp: int) -> datetime:
     """Returns datetime object created from given unix timestamp"""
-    return datetime.fromtimestamp(unix_timestamp)
+    return datetime.fromtimestamp(unix_timestamp, tz=timezone.utc)

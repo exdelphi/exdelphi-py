@@ -1,10 +1,10 @@
-from typing import List
-import requests
-import pandas as pd
 import json
-import data_model as data_model
-from api_time import int_to_datetime, datetime_to_int
+from typing import List
 
+import data_model as data_model
+import pandas as pd
+import requests
+from api_time import datetime_to_int, int_to_datetime
 
 BASE_URL = "http://api.exdelphi.com"
 HEADERS = {"Content-Type": "application/json", "Authorization": ""}

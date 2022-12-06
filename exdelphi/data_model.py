@@ -1,5 +1,5 @@
-from pydantic import BaseModel
 from api_time import int_to_datetime
+from pydantic import BaseModel
 
 
 class Data(BaseModel):
