@@ -16,6 +16,3 @@ def datetime_string_to_int(datetime_string: str, format_string: str) -> int:
 def int_to_datetime(unix_timestamp: int) -> datetime:
     """Returns datetime object created from given unix timestamp"""
     return datetime.fromtimestamp(unix_timestamp, tz=timezone.utc)
-
-
-datetime_string_to_int("2022-12-06 17:14:21", "%Y-%m-%d %H:%M:%S")
