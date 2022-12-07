@@ -1,10 +1,10 @@
 import json
 from typing import List
 
-import data_model as data_model
+import exdelphi.data_model as data_model
 import pandas as pd
 import requests
-from api_time import datetime_to_int, int_to_datetime
+from exdelphi.api_time import datetime_to_int, int_to_datetime
 
 BASE_URL = "http://api.exdelphi.com"
 HEADERS = {"Content-Type": "application/json", "Authorization": ""}
@@ -17,9 +17,12 @@ def authorize(username: str, password: str) -> None:
         data={"username": username, "password": password},
     )
     response_content = json.loads(response.text)
-    token = response_content["access_token"]
-    HEADERS["Authorization"] = f"Bearer {token}"
-    print(f"Authenticated {username} at {BASE_URL}")
+    if response.status_code == 200:
+        token = response_content["access_token"]
+        HEADERS["Authorization"] = f"Bearer {token}"
+        print(f"Authenticated {username} at {BASE_URL}")
+    else:
+        raise PermissionError('Incorrect username or password')
 
 
 def get_product_list() -> List[data_model.Product]:
