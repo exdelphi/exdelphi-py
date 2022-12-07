@@ -1,4 +1,4 @@
-from api_time import int_to_datetime
+from exdelphi.api_time import int_to_datetime
 from pydantic import BaseModel
 
 
