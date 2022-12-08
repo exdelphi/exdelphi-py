@@ -16,34 +16,52 @@ def authorize(username: str, password: str) -> None:
         url=f"{BASE_URL}/token",
         data={"username": username, "password": password},
     )
-    response_content = json.loads(response.text)
+    response_text = json.loads(response.text)
     if response.status_code == 200:
-        token = response_content["access_token"]
+        token = response_text["access_token"]
         HEADERS["Authorization"] = f"Bearer {token}"
         print(f"Authenticated {username} at {BASE_URL}")
+        return
+    _raise_response_error(response)
+
+
+def _raise_response_error(response):
+    if response.status_code == 401:
+        raise PermissionError("Incorrect username or password")
+    elif response.status_code == 500:
+        raise ConnectionError("Server error")
     else:
-        raise PermissionError('Incorrect username or password')
+        raise RuntimeError(json.loads(response.text))
 
 
 def get_product_list() -> List[data_model.Product]:
     """Returns list of all products available to authorized user"""
     response = requests.get(url=f"{BASE_URL}/products/", headers=HEADERS)
-    return [data_model.Product.parse_obj(item) for item in json.loads(response.text)]
+    response_text = json.loads(response.text)
+    if response.status_code == 200:
+        return [data_model.Product.parse_obj(item) for item in response_text]
+    _raise_response_error(response)
 
 
 def get_data_sets_for_product(product_id) -> List[data_model.Dataset]:
     """Returns list of datasets from given product available to authorized user"""
     response = requests.get(url=f"{BASE_URL}/data_sets/{product_id}", headers=HEADERS)
-    return [data_model.Dataset.parse_obj(item) for item in json.loads(response.text)]
+    if response.status_code == 200:
+        return [
+            data_model.Dataset.parse_obj(item) for item in json.loads(response.text)
+        ]
+    _raise_response_error(response)
 
 
 def get_data(data_set_id: int) -> pd.DataFrame:
     """Returns data set with given ID to authorized user"""
-    request = requests.get(url=f"{BASE_URL}/data/{data_set_id}", headers=HEADERS)
-    result = json.loads(request.text)
-    data = pd.DataFrame(result)
-    data.set_index("t", inplace=True)
-    return data
+    response = requests.get(url=f"{BASE_URL}/data/{data_set_id}", headers=HEADERS)
+    result = json.loads(response.text)
+    if response.status_code == 200:
+        data = pd.DataFrame(result)
+        data.set_index("t", inplace=True)
+        return data
+    _raise_response_error(response)
 
 
 def convert_to_timestamp(data: pd.DataFrame) -> pd.DataFrame:
@@ -62,7 +80,6 @@ def upload_data(product_id: int, start_time: int, data: pd.DataFrame) -> None:
     """ "Convert pandas DataFrame with columns 't' and 'v' to json and upload to database"""
     _prepare_time_column(data)
     data_as_json = data.to_json(orient="records")
-    print(data_as_json)
     requests.put(
         url=f"{BASE_URL}/data/?product_id={product_id}&start_time={start_time}",
         headers=HEADERS,
