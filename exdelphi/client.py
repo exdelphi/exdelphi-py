@@ -1,9 +1,10 @@
 import json
 from typing import List
 
-import exdelphi.data_model as data_model
 import pandas as pd
 import requests
+
+import exdelphi.data_model as data_model
 from exdelphi.api_time import datetime_to_int, int_to_datetime
 
 BASE_URL = "http://api.exdelphi.com"
@@ -46,19 +47,18 @@ def get_product_list() -> List[data_model.Product]:
 def get_data_sets_for_product(product_id) -> List[data_model.Dataset]:
     """Returns list of datasets from given product available to authorized user"""
     response = requests.get(url=f"{BASE_URL}/data_sets/{product_id}", headers=HEADERS)
+    response_text = json.loads(response.text)
     if response.status_code == 200:
-        return [
-            data_model.Dataset.parse_obj(item) for item in json.loads(response.text)
-        ]
+        return [data_model.Dataset.parse_obj(item) for item in response_text]
     _raise_response_error(response)
 
 
 def get_data(data_set_id: int) -> pd.DataFrame:
     """Returns data set with given ID to authorized user"""
     response = requests.get(url=f"{BASE_URL}/data/{data_set_id}", headers=HEADERS)
-    result = json.loads(response.text)
+    response_text = json.loads(response.text)
     if response.status_code == 200:
-        data = pd.DataFrame(result)
+        data = pd.DataFrame(response_text)
         data.set_index("t", inplace=True)
         return data
     _raise_response_error(response)
