@@ -1,7 +1,8 @@
 import unittest
 from datetime import datetime, timezone
 
-from exdelphi.api_time import datetime_string_to_int, datetime_to_int, int_to_datetime
+from exdelphi.api_time import (datetime_string_to_int, datetime_to_int,
+                               int_to_datetime)
 
 
 class TestApiTime(unittest.TestCase):

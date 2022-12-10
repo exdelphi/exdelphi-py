@@ -2,9 +2,10 @@ import json
 import unittest
 from unittest.mock import patch
 
+import pandas as pd
 import requests
 
-from exdelphi.client import HEADERS, authorize, get_product_list
+from exdelphi.client import HEADERS, authorize, get_data, get_product_list
 from exdelphi.data_model import Product
 
 
@@ -63,11 +64,27 @@ class TestClient(unittest.TestCase):
         self.assertEqual(str(context.exception), "Incorrect username or password")
 
     @patch("requests.get")
-    def test_get_product_list_server_error(self, mock_get):
+    def test_get_data(self, mock_get):
+        # Create a mock response object with a 200 status code
+        # and a pre-defined response text
+        mock_response = requests.Response()
+        mock_response.status_code = 200
+        mock_response._content = json.dumps(
+            [{"t": 1, "v": 10}, {"t": 2, "v": 20}]
+        ).encode("utf-8")
+        mock_get.return_value = mock_response
+        result = get_data(1)
+        expected_result = pd.DataFrame([{"t": 1, "v": 10}, {"t": 2, "v": 20}])
+        expected_result.set_index("t", inplace=True)
+        pd.testing.assert_frame_equal(result, expected_result)
+
+    @patch("requests.get")
+    def test_no_connection_error(self, mock_get):
         mock_response = requests.Response()
         mock_response.status_code = 500
         mock_response._content = json.dumps({"detail": "Server Error"}).encode("utf-8")
         mock_get.return_value = mock_response
-        with self.assertRaises(ConnectionError) as context:
+        with self.assertRaises(ConnectionError):
+            get_data(1)
+        with self.assertRaises(ConnectionError):
             get_product_list()
-        self.assertEqual(str(context.exception), "Server error")
