@@ -64,13 +64,13 @@ def get_data(data_set_id: int) -> pd.DataFrame:
     _raise_response_error(response)
 
 
-def convert_to_timestamp(data: pd.DataFrame) -> pd.DataFrame:
+def convert_int_to_datetime(data: pd.DataFrame) -> pd.DataFrame:
     """Converts time column `t` from int representation to time stamps"""
     data.index = data.index.map(lambda t: int_to_datetime(t))
     return data
 
 
-def convert_to_int(data: pd.DataFrame) -> pd.DataFrame:
+def convert_datetime_to_int(data: pd.DataFrame) -> pd.DataFrame:
     """Converts time column `t` from time stamps representation to int"""
     data["t"] = data["t"].map(lambda t: datetime_to_int(t))
     return data
@@ -95,7 +95,7 @@ def _prepare_time_column(data):
     if "v" not in data:
         raise ValueError("value v is missing in data")
     try:
-        data = convert_to_int(data)
+        data = convert_datetime_to_int(data)
     except AttributeError:
         pass
     if data["t"].dtype != int:
